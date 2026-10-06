@@ -25,6 +25,9 @@ export default async function TenantPage({ params }: { params: Promise<{ tenant_
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
   const supabase = createClient(supabaseUrl, supabaseKey);
 
+  console.log("--> [DEBUG] Attempting to fetch tenant slug:", tenant_id);
+  console.log("--> [DEBUG] Supabase URL exists:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
+
   // Fetch the specific tenant based on the URL parameter (tenant_id / slug)
   const { data: tenant, error: tenantError } = await supabase
     .from('tenants')
@@ -32,10 +35,16 @@ export default async function TenantPage({ params }: { params: Promise<{ tenant_
     .eq('slug', tenant_id)
     .single();
 
+  if (tenantError) {
+    console.error("--> [ERROR] Supabase Fetch Failed:", tenantError);
+  }
+
   // If no tenant is found, render the 404 Not Found page
-  if (tenantError || !tenant) {
+  if (!tenant) {
     notFound();
   }
+
+  console.log("--> [SUCCESS] Tenant Data:", tenant);
 
   // Determine dynamic data based on locale
   const storeName = locale === 'ar' ? tenant.name_ar : tenant.name_en;
