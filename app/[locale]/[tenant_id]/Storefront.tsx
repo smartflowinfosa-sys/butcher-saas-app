@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { ShoppingCart, Plus, Minus, Beef, Store, Tag, ClipboardList, LayoutGrid, User, MapPin, Phone } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Beef, Store, Tag, ClipboardList, LayoutGrid, User, MapPin, Phone, Wallet, Globe, Bell, MessageCircle, HelpCircle, FileText, Lock, Info, LogOut, ChevronLeft, X, Video } from 'lucide-react';
 import CheckoutModal from './CheckoutModal';
 
 export type Product = {
@@ -35,6 +35,7 @@ export default function Storefront({
   // New Navigation States (Used in conditional rendering below line 110)
   const [activeTab, setActiveTab] = useState<'menu' | 'offers' | 'orders' | 'more'>('menu');
   const [offerSubTab, setOfferSubTab] = useState<'offers' | 'discount'>('offers');
+  const [activeModal, setActiveModal] = useState<string | null>(null);
 
   const filteredProducts = initialProducts.filter(p => {
     if (activeCategory === "الكل" || activeCategory === "All") return true;
@@ -311,36 +312,106 @@ export default function Storefront({
         {/* --- MORE TAB --- */}
         {activeTab === 'more' && (
           <div className="animate-in fade-in duration-300">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">{isRtl ? 'المزيد' : 'More'}</h2>
-            
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              <button className="w-full flex items-center justify-between p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-red-50 text-red-700 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5" />
-                  </div>
-                  <span className="font-bold text-gray-700">{isRtl ? 'حسابي' : 'My Account'}</span>
-                </div>
+            {/* Top section: Socials */}
+            <div className="bg-white rounded-2xl p-4 flex justify-center gap-6 mb-6 shadow-sm border border-gray-100">
+              <button className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:text-green-600 hover:bg-green-50 transition-colors">
+                <MessageCircle className="w-6 h-6" />
               </button>
-              
-              <button className="w-full flex items-center justify-between p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-red-50 text-red-700 rounded-full flex items-center justify-center">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <span className="font-bold text-gray-700">{isRtl ? 'عناوين التوصيل' : 'Saved Addresses'}</span>
-                </div>
-              </button>
-
-              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-red-50 text-red-700 rounded-full flex items-center justify-center">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <span className="font-bold text-gray-700">{isRtl ? 'تواصل معنا' : 'Contact Us'}</span>
-                 </div>
+              <button className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-100 transition-colors">
+                <Video className="w-6 h-6" />
               </button>
             </div>
+
+            {/* Group 1 */}
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-4 divide-y divide-gray-100">
+              <button onClick={() => setActiveModal('profile')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'حسابي' : 'My Account'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+              <button onClick={() => setActiveModal('addresses')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'عناوين التوصيل' : 'Saved Addresses'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+              <button onClick={() => setActiveModal('wallet')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <Wallet className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'المحفظة والرصيد' : 'Wallet & Balance'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+            </div>
+
+            {/* Group 2 */}
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-4 divide-y divide-gray-100">
+              <div className="w-full flex items-center justify-between p-4 bg-white text-right">
+                <div className="flex items-center gap-3">
+                  <Globe className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'لغة التطبيق' : 'App Language'}</span>
+                </div>
+                <div className="flex bg-gray-100 rounded-full p-1 dir-ltr">
+                  <button className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${!isRtl ? 'bg-red-700 text-white' : 'text-gray-500'}`}>EN</button>
+                  <button className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${isRtl ? 'bg-red-700 text-white' : 'text-gray-500'}`}>AR</button>
+                </div>
+              </div>
+              <button onClick={() => setActiveModal('notifications')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <Bell className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'إعدادات الإشعارات' : 'Notification Settings'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+            </div>
+
+            {/* Group 3 */}
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-6 divide-y divide-gray-100">
+              <button onClick={() => setActiveModal('contact')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <MessageCircle className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'تواصل معنا' : 'Contact Us'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+              <button onClick={() => setActiveModal('faq')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <HelpCircle className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'الأسئلة الشائعة' : 'FAQs'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+              <button onClick={() => setActiveModal('terms')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'الشروط والأحكام' : 'Terms & Conditions'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+              <button onClick={() => setActiveModal('privacy')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <Lock className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'سياسة الخصوصية' : 'Privacy Policy'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+              <button onClick={() => setActiveModal('about')} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-right">
+                <div className="flex items-center gap-3">
+                  <Info className="w-5 h-5 text-gray-500" />
+                  <span className="font-bold text-gray-700">{isRtl ? 'عن التطبيق' : 'About App'}</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
+              </button>
+            </div>
+
+            {/* Logout Button */}
+            <button className="w-full bg-red-50 text-red-600 rounded-2xl p-4 font-bold flex justify-center items-center gap-2 mb-24 transition-colors hover:bg-red-100 active:bg-red-200">
+              <LogOut className="w-5 h-5" />
+              {isRtl ? 'تسجيل الخروج' : 'Logout'}
+            </button>
           </div>
         )}
 
@@ -390,6 +461,33 @@ export default function Storefront({
         products={initialProducts}
         isRtl={isRtl}
       />
+
+      {/* Dynamic Settings Modal */}
+      {activeModal && (
+        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-200">
+          <div className="bg-white w-full md:w-[400px] h-[80vh] md:h-auto md:max-h-[80vh] rounded-t-2xl md:rounded-2xl shadow-xl flex flex-col animate-in slide-in-from-bottom-full md:slide-in-from-bottom-10 duration-300">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900 capitalize">
+                {activeModal.replace('-', ' ')}
+              </h2>
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 flex-grow overflow-y-auto">
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3 min-h-[300px]">
+                <Info className="w-12 h-12 text-gray-200" />
+                <p className="font-medium text-center">
+                  {isRtl ? 'سيتم إضافة المحتوى قريباً' : 'Content coming soon'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
